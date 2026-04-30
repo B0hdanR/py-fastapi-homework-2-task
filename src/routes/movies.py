@@ -3,9 +3,8 @@ from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 from database import get_db
 from database.models import (
@@ -18,6 +17,7 @@ from database.models import (
 from schemas import MovieListResponseSchema, MovieDetailResponseSchema, MovieCreateSchema, MovieUpdateSchema
 
 router = APIRouter()
+
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
@@ -81,8 +81,7 @@ async def create_movie(
     if existing_movie.scalar():
         raise HTTPException(
             status_code=409,
-            detail=f"A movie with the name '{movie.name}' and "
-                   f"release date '{movie.date}' already exists."
+            detail=f"A movie with the name '{movie.name}' and release date '{movie.date}' already exists."
         )
 
     country = await db.execute(
@@ -135,14 +134,14 @@ async def create_movie(
         languages.append(result)
 
     movie_create = MovieModel(
-        name = movie.name,
-        date = movie.date,
-        score = movie.score,
-        overview = movie.overview,
-        status = movie.status,
-        budget = movie.budget,
-        revenue = movie.revenue,
-        country_id = country.id,
+        name=movie.name,
+        date=movie.date,
+        score=movie.score,
+        overview=movie.overview,
+        status=movie.status,
+        budget=movie.budget,
+        revenue=movie.revenue,
+        country_id=country.id,
     )
 
     movie_create.genres = genres
